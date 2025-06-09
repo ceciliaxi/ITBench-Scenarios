@@ -1,5 +1,4 @@
 ---
-- import_tasks: install_chaos_mesh.yaml
 - import_tasks: run_native.yaml
 - import_tasks: run_chaos_network_delay.yaml
 - import_tasks: run_chaos_network_partition.yaml
@@ -17,7 +16,6 @@
 - import_tasks: enable_namespace_memory_limit.yaml
 - import_tasks: run_chaos_jvm_return.yaml
 - import_tasks: run_chaos_jvm_heap_stress.yaml
-- import_tasks: uninstall_chaos_mesh.yaml
 - import_tasks: run_bin_misusage.yaml
 - import_tasks: run_missing_storageclass.yaml
 - import_tasks: elasticsearch_password.yaml
