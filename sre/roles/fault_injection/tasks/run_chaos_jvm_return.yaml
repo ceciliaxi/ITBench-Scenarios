@@ -76,7 +76,7 @@
       kind: Schedule
       metadata:
         name: "schedule-jvmreturn-{{ target_namespace_name }}-{{ target_label_name1 }}"
-        namespace: "{{ chaos_mesh_namespace_project_name }}"
+        namespace: "{{ tools_helm_releases.chaos_mesh.namespace }}"
       spec:
         schedule: "* * * * *"
         historyLimit: 1
@@ -105,7 +105,7 @@
       kind: Schedule
       metadata:
         name: "schedule-jvmreturn-{{ target_namespace_name }}-{{ target_label_name1 }}"
-        namespace: "{{ chaos_mesh_namespace_project_name }}"
+        namespace: "{{ tools_helm_releases.chaos_mesh.namespace }}"
   register: fault_removal_status
   tags: chaos_mesh
   when: is_jvm_return_chaos and is_fault_removal

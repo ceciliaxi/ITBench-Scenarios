@@ -23,7 +23,7 @@
       kind: Schedule
       metadata:
         name: "schedule-httpabort-{{ target_namespace_name }}-{{ target_label_name1 }}"
-        namespace: "{{ chaos_mesh_namespace_project_name }}"
+        namespace: "{{ tools_helm_releases.chaos_mesh.namespace }}"
       spec:
         schedule: "* * * * *"  # Run every minute
         historyLimit: 1  # Only keep record of the latest experiment
@@ -55,7 +55,7 @@
       kind: Schedule
       metadata:
         name: "schedule-httpabort-{{ target_namespace_name }}-{{ target_label_name1 }}"
-        namespace: "{{ chaos_mesh_namespace_project_name }}"
+        namespace: "{{ tools_helm_releases.chaos_mesh.namespace }}"
   register: fault_removal_status
   tags: chaos_mesh
   when: is_http_abort_chaos and is_fault_removal

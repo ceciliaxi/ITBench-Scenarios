@@ -154,7 +154,7 @@
       kind: Schedule
       metadata:
         name: "schedule-jvmheapstress-{{ target_deployment_name }}"
-        namespace: "{{ chaos_mesh_namespace_project_name }}"
+        namespace: "{{ tools_helm_releases.chaos_mesh.namespace }}"
       spec:
         schedule: "* * * * *"
         historyLimit: 1
@@ -183,7 +183,7 @@
       kind: Schedule
       metadata:
         name: "schedule-jvmheapstress-{{ target_deployment_name }}"
-        namespace: "{{ chaos_mesh_namespace_project_name }}"
+        namespace: "{{ tools_helm_releases.chaos_mesh.namespace }}"
   register: fault_removal_status
   tags: chaos-mesh
   when: is_jvm_heap_chaos and is_fault_removal

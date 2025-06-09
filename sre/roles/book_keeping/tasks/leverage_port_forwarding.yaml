@@ -16,7 +16,7 @@
   when: ingress_hostname is undefined or ingress_hostname | trim == ''
 
 - name: Kubectl port-forward on/for the prometheus-server service with dynamic port
-  ansible.builtin.shell: KUBECONFIG={{ kubeconfig }} kubectl -n "{{ prometheus_namespace_project_name }}" port-forward "svc/prometheus-server" "{{ dynamic_port }}:80" --request-timeout=10m
+  ansible.builtin.shell: KUBECONFIG={{ kubeconfig }} kubectl -n "{{ tools_helm_releases.prometheus.namespace }}" port-forward "svc/prometheus-server" "{{ dynamic_port }}:80" --request-timeout=10m
   async: 600
   poll: 0
   register: prometheus_port_forward_for_datasources_creation

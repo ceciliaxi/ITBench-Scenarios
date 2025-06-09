@@ -1,7 +1,7 @@
 ---
 - name: Print prometheus namespace and application namespace
   debug:
-    msg: "Prometheus namespace : {{ prometheus_namespace_project_name }}, Application namespace : {{ otel_astronomy_app_namespace_project_name }}"
+    msg: "Prometheus namespace : {{ tools_helm_releases.prometheus.namespace }}, Application namespace : {{ otel_astronomy_app_namespace_project_name }}"
   tags:
     - book_keeping
 
