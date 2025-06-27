@@ -6,6 +6,15 @@
     - name: Get all namespaces
       kubernetes.core.k8s_info:
         kind: Namespace
+
+    - name: Get all namespaces
+      kubernetes.core.k8s_info:
+        kind: Namespace
+        kubeconfig: /runner/kubeconfig
+    
+    - name: Get all namespaces
+      kubernetes.core.k8s_info:
+        kind: Namespace
         kubeconfig: /tmp/kubeconfig    # Path inside container where kubeconfig is mounted
       register: namespaces
 
