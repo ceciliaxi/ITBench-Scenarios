@@ -3,7 +3,6 @@
   hosts: localhost
   gather_facts: false
   tasks:
-
     - name: Check kube config
       hosts: localhost
       gather_facts: false
