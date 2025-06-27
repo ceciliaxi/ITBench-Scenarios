@@ -1,7 +1,8 @@
 ---
-- name: Set default kubeconfig path if not provided
+- name: Set default kubeconfig path
   set_fact:
-    kubeconfig_path: "{{ kubeconfig | default('/runner/.kube/config', true) }}"
+    kubeconfig: "/runner/.kube/config"
+  when: kubeconfig is not defined
     
 - name: Get the Ingress URL
   ansible.builtin.shell: "KUBECONFIG={{ kubeconfig }} kubectl get ingress prometheus -n {{ prometheus_namespace_project_name }} -o json"
