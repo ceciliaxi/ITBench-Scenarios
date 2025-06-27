@@ -1,76 +1,58 @@
 ---
-- name: Test Kubernetes connection
+- name: Debug Kubernetes connectivity in AWX EE
   hosts: localhost
   gather_facts: false
+  vars:
+    kubeconfig_path: "/path/to/kubeconfig"   # Adjust to where your kubeconfig is mounted in EE
+    apiserver_url: "https://10.184.146.142:33443"
+
   tasks:
-    - name: Run kubectl
+    - name: Check if KUBECONFIG file exists
+      ansible.builtin.stat:
+        path: "{{ kubeconfig_path }}"
+      register: kubeconfig_stat
+
+    - name: Show KUBECONFIG file info
+      ansible.builtin.debug:
+        var: kubeconfig_stat
+
+    - name: List kubeconfig file contents (first 20 lines)
       ansible.builtin.command:
-        cmd: "kubectl get ns"
-        
-    - name: Get all namespaces
-      kubernetes.core.k8s_info:
-        kind: Namespace
-    
-    - name: Test connectivity to Kubernetes API
-      ansible.builtin.shell: |
-        curl -k https://10.184.146.1:33443/version
-      register: curl_result
-    
-    - debug:
-        var: curl_result.stdout
-    
-    - name: Show /tmp/kubeconfig content
+        cmd: head -20 "{{ kubeconfig_path }}"
+      when: kubeconfig_stat.stat.exists
+
+    - name: Run kubectl get ns using the kubeconfig explicitly
       ansible.builtin.command:
-        cmd: cat /tmp/kubeconfig
-      register: kubeconfig_content
-      ignore_errors: yes
-    
-    - name: Display kubeconfig content
+        cmd: kubectl get ns --kubeconfig "{{ kubeconfig_path }}"
+      register: kubectl_output
+      failed_when: kubectl_output.rc != 0
+      environment:
+        KUBECONFIG: "{{ kubeconfig_path }}"
+      when: kubeconfig_stat.stat.exists
+
+    - name: Show kubectl get ns output
       ansible.builtin.debug:
-        var: kubeconfig_content.stdout_lines
-    
-    - name: List files in /tmp
-      ansible.builtin.command: ls -l /tmp
-      register: tmp_files
+        var: kubectl_output.stdout_lines
+      when: kubectl_output is defined
 
-    - name: Show tmp files
+    - name: Test API server connectivity with curl
+      ansible.builtin.command:
+        cmd: curl -k -m 10 "{{ apiserver_url }}/version"
+      register: curl_output
+      failed_when: curl_output.rc != 0
+
+    - name: Show curl output
       ansible.builtin.debug:
-        var: tmp_files.stdout_lines
+        var: curl_output.stdout_lines
 
-    - name: Print environment variables
-      ansible.builtin.shell: env
-      register: env_output
-
-    - name: Show env output
-      ansible.builtin.debug:
-        var: env_output.stdout_lines
-
-    - name: List files in /runner/secrets
-      ansible.builtin.command: ls -l /runner/secrets
-      register: secrets_files
-
-    - name: Show secrets files
-      ansible.builtin.debug:
-        var: secrets_files.stdout_lines
-
-    - name: Get all namespaces (using /runner/kubeconfig)
+    - name: Try k8s_info module to get namespaces (skip if kubeconfig missing)
       kubernetes.core.k8s_info:
         kind: Namespace
-        kubeconfig: /runner/kubeconfig
-      register: namespaces_runner_kubeconfig
-      ignore_errors: yes
+        kubeconfig: "{{ kubeconfig_path }}"
+      register: k8s_info_output
+      when: kubeconfig_stat.stat.exists
 
-    - name: Get all namespaces (using /tmp/kubeconfig)
-      kubernetes.core.k8s_info:
-        kind: Namespace
-        kubeconfig: /tmp/kubeconfig
-      register: namespaces_tmp_kubeconfig
-      ignore_errors: yes
-
-    - name: Show namespaces result from /runner/kubeconfig
-      debug:
-        var: namespaces_runner_kubeconfig.resources
-
-    - name: Show namespaces result from /tmp/kubeconfig
-      debug:
-        var: namespaces_tmp_kubeconfig.resources
+    - name: Show namespaces from k8s_info
+      ansible.builtin.debug:
+        var: k8s_info_output.resources
+      when: k8s_info_output is defined
