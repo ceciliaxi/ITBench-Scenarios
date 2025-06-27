@@ -3,6 +3,14 @@
   hosts: localhost
   gather_facts: false
   tasks:
+    - name: Test connectivity to Kubernetes API
+      ansible.builtin.shell: |
+        curl -k https://10.184.146.1:33443/version
+      register: curl_result
+    
+    - debug:
+        var: curl_result.stdout
+    
     - name: Show /tmp/kubeconfig content
       ansible.builtin.command:
         cmd: cat /tmp/kubeconfig
