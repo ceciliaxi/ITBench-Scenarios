@@ -3,11 +3,6 @@
   hosts: localhost
   gather_facts: false
   tasks:
-    - name: Check kube config
-      hosts: localhost
-      gather_facts: false
-      tasks:
-    
     - name: Run kubectl
       ansible.builtin.command:
         cmd: "kubectl get ns"
