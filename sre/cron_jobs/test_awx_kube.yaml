@@ -3,6 +3,14 @@
   hosts: localhost
   gather_facts: false
   tasks:
+    - name: List files in /runner
+      ansible.builtin.command: ls -l /runner
+      register: runner_files
+    
+    - name: Show runner files
+      ansible.builtin.debug:
+        var: runner_files.stdout_lines
+    
     - name: Get all namespaces
       kubernetes.core.k8s_info:
         kind: Namespace
