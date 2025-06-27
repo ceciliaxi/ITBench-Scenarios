@@ -2,9 +2,9 @@
 - name: Periodic run for alert recordings
   hosts: localhost
   tasks:
-  - name: (Hack) Kubeconfig path inside AWX-EE container
-    ansible.builtin.shell: find /runner/env -type f -size +3072c
-    register: kubeconfig
+  # - name: (Hack) Kubeconfig path inside AWX-EE container
+  #   ansible.builtin.shell: find /runner/env -type f -size +3072c
+  #   register: kubeconfig
 
   - name: Tasks associated with leveraging ingress
     ansible.builtin.include_tasks:
