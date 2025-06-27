@@ -1,0 +1,13 @@
+---
+- name: Test Kubernetes connection
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Get all namespaces
+      kubernetes.core.k8s_info:
+        kind: Namespace
+        kubeconfig: /tmp/kubeconfig    # Path inside container where kubeconfig is mounted
+      register: namespaces
+
+    - debug:
+        var: namespaces.resources
