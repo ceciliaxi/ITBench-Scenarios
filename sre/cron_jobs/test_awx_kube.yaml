@@ -3,6 +3,10 @@
   hosts: localhost
   gather_facts: false
   tasks:
+    - name: Get all namespaces
+      kubernetes.core.k8s_info:
+        kind: Namespace
+    
     - name: Test connectivity to Kubernetes API
       ansible.builtin.shell: |
         curl -k https://10.184.146.1:33443/version
