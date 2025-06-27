@@ -3,6 +3,16 @@
   hosts: localhost
   gather_facts: false
   tasks:
+    - name: Show /tmp/kubeconfig content
+      ansible.builtin.command:
+        cmd: cat /tmp/kubeconfig
+      register: kubeconfig_content
+      ignore_errors: yes
+    
+    - name: Display kubeconfig content
+      ansible.builtin.debug:
+        var: kubeconfig_content.stdout_lines
+    
     - name: List files in /tmp
       ansible.builtin.command: ls -l /tmp
       register: tmp_files
