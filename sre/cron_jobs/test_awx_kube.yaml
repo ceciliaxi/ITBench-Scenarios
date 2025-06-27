@@ -8,9 +8,10 @@
       hosts: localhost
       gather_facts: false
       tasks:
-        - name: Run kubectl
-          ansible.builtin.command:
-            cmd: "kubectl get ns"
+    
+    - name: Run kubectl
+      ansible.builtin.command:
+        cmd: "kubectl get ns"
         
     - name: Get all namespaces
       kubernetes.core.k8s_info:
