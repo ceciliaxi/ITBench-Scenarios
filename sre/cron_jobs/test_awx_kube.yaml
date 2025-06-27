@@ -6,18 +6,15 @@
     - name: List files in /tmp
       ansible.builtin.command: ls -l /tmp
       register: tmp_files
-    
+
     - name: Show tmp files
       ansible.builtin.debug:
         var: tmp_files.stdout_lines
-        - name: Get all namespaces
-          kubernetes.core.k8s_info:
-            kind: Namespace
-    
+
     - name: Print environment variables
       ansible.builtin.shell: env
       register: env_output
-    
+
     - name: Show env output
       ansible.builtin.debug:
         var: env_output.stdout_lines
@@ -25,21 +22,29 @@
     - name: List files in /runner/secrets
       ansible.builtin.command: ls -l /runner/secrets
       register: secrets_files
-    
+
     - name: Show secrets files
       ansible.builtin.debug:
         var: secrets_files.stdout_lines
 
-    - name: Get all namespaces
+    - name: Get all namespaces (using /runner/kubeconfig)
       kubernetes.core.k8s_info:
         kind: Namespace
         kubeconfig: /runner/kubeconfig
-    
-    - name: Get all namespaces
+      register: namespaces_runner_kubeconfig
+      ignore_errors: yes
+
+    - name: Get all namespaces (using /tmp/kubeconfig)
       kubernetes.core.k8s_info:
         kind: Namespace
-        kubeconfig: /tmp/kubeconfig    # Path inside container where kubeconfig is mounted
-      register: namespaces
+        kubeconfig: /tmp/kubeconfig
+      register: namespaces_tmp_kubeconfig
+      ignore_errors: yes
 
-    - debug:
-        var: namespaces.resources
+    - name: Show namespaces result from /runner/kubeconfig
+      debug:
+        var: namespaces_runner_kubeconfig.resources
+
+    - name: Show namespaces result from /tmp/kubeconfig
+      debug:
+        var: namespaces_tmp_kubeconfig.resources
